@@ -96,9 +96,9 @@ export function NuHeader({
 const styles = StyleSheet.create({
   header: {
     backgroundColor: theme.colors.primary,
-    paddingTop: 48,
+    paddingTop: 16,
     paddingHorizontal: theme.spacing.md,
-    paddingBottom: theme.spacing.lg,
+    paddingBottom: theme.spacing.md,
   },
   topRow: {
     flexDirection: "row",
@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   avatarButton: {
-    width: 44,
-    height: 44,
+    width: 40,
+    height: 40,
     borderRadius: theme.borderRadius.full,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     alignItems: "center",
@@ -125,11 +125,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   titleContainer: {
-    marginTop: theme.spacing.lg,
+    marginTop: theme.spacing.sm + 4,
   },
   titleText: {
     color: theme.colors.textPrimary,
-    fontSize: theme.typography.fontSizes.lg,
+    fontSize: theme.typography.fontSizes.md + 2,
     fontWeight: "700",
   },
   subtitleText: {

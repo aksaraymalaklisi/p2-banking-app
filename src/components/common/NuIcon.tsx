@@ -25,7 +25,9 @@ export type IconName =
   | "shield" // Central de segurança (🛡)
   | "bell" // Notificações (🔔)
   | "settings" // Configurações / Porca (⚙)
-  | "heart"; // Avalie esta tela (♥)
+  | "heart" // Avalie esta tela (♥)
+  | "crypto" // Criptomoedas (₿)
+  | "finance"; // Open Finance (🏛)
 
 /**
  * Interface de Props do componente NuIcon.
@@ -84,6 +86,10 @@ export function NuIcon({ name, size = 20, color = "#FFFFFF" }: NuIconProps) {
         return "⚙";
       case "heart":
         return "♥";
+      case "crypto":
+        return "₿";
+      case "finance":
+        return "🏛";
       default:
         return "•";
     }
