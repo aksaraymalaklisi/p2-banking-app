@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../../constants/theme";
 
 /**

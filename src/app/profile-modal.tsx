@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { theme } from "../constants/theme";
 import { NuIcon } from "../components/common/NuIcon";
