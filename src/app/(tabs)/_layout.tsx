@@ -37,7 +37,10 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        safeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 },
         tabBarStyle: styles.tabBar,
+        tabBarItemStyle: styles.tabBarItem,
+        tabBarIconStyle: styles.tabBarIconContainer,
       }}
     >
       {/* Aba 1: Principal (Setas) */}
@@ -89,16 +92,38 @@ export default function TabsLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: theme.colors.background,
-    borderTopColor: theme.colors.surfaceHighlight,
-    borderTopWidth: 1,
-    height: 64,
-    paddingTop: 8,
-    paddingBottom: 8,
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "rgba(24, 24, 24, 0.98)",
+    borderTopWidth: 0,
+    elevation: 10,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+  tabBarItem: {
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 0,
+    margin: 0,
+  },
+  tabBarIconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 0,
+    marginBottom: 0,
   },
   iconWrapper: {
-    width: 44,
-    height: 44,
+    width: 38,
+    height: 38,
     borderRadius: theme.borderRadius.full,
     alignItems: "center",
     justifyContent: "center",
