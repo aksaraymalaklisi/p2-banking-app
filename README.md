@@ -1,6 +1,6 @@
-# Artefatos da aula do dia 15/09/2026
+# Arquivos da Avaliação P1
 
-Esse repositório contém os arquivos da aula do dia 15/09/2026.
+Esse repositório contém os arquivos da Avaliação P1 da disciplina de Desenvolvimento de Aplicativos Híbridos.
 
 ## Instalar e inicializar o app
 
