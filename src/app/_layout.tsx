@@ -1,15 +1,15 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { theme } from "../constants/theme";
+import { AccountProvider } from "../context/AccountContext";
 
 /**
  * Layout Raiz (Root Layout) da aplicação Nubank.
- * Define o container Stack nativo, configura a barra de status clara (light)
- * e declara as rotas para o grupo de abas e os modais deslizantes.
+ * Envolve a aplicação no AccountProvider para compartilhamento de estado global.
  */
 export default function RootLayout() {
   return (
-    <>
+    <AccountProvider>
       {/* Ícones de relógio e bateria brancos para combinar com o Dark Mode */}
       <StatusBar style="light" />
 
@@ -42,6 +42,6 @@ export default function RootLayout() {
           }}
         />
       </Stack>
-    </>
+    </AccountProvider>
   );
 }
