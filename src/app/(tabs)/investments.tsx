@@ -1,17 +1,23 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../../constants/theme";
+import { NuHeader } from "../../components/common/NuHeader";
+import { useAccount } from "../../context/AccountContext";
 
 /**
  * Tela de Investimentos - Aba 2 do Nubank (Cifrão).
- * Apresenta saldo de investimentos, rendimentos e atalhos para Caixinhas.
+ * Apresenta saldo de investimentos com toggle de privacidade e atalhos para Caixinhas.
  */
 export default function InvestmentsScreen() {
+  const { investmentsTotal, formatCurrency } = useAccount();
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Investimentos</Text>
+    <SafeAreaView style={styles.safeArea} edges={["left", "right"]}>
+      {/* Cabeçalho Roxo Integrado */}
+      <NuHeader title="Investimentos" subtitle="Acompanhe o rendimento do seu dinheiro" />
+
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        <View style={styles.actionHeader}>
           <TouchableOpacity style={styles.investButton} activeOpacity={0.8}>
             <Text style={styles.investButtonText}>Investir</Text>
           </TouchableOpacity>
@@ -19,7 +25,7 @@ export default function InvestmentsScreen() {
 
         <View style={styles.balanceCard}>
           <Text style={styles.label}>Total em investimentos</Text>
-          <Text style={styles.balance}>R$ 3.250,00</Text>
+          <Text style={styles.balance}>{formatCurrency(investmentsTotal)}</Text>
           <Text style={styles.yieldText}>↗ + R$ 120,40 em 12 meses</Text>
         </View>
 
@@ -27,10 +33,10 @@ export default function InvestmentsScreen() {
           <Text style={styles.sectionTitle}>Minha organização</Text>
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Caixinhas</Text>
-            <Text style={styles.cardSubtitle}>R$ 2.500,00 guardados</Text>
+            <Text style={styles.cardSubtitle}>{`${formatCurrency(2500)} guardados`}</Text>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -41,19 +47,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   container: {
-    flex: 1,
     padding: theme.spacing.md,
   },
-  header: {
+  actionHeader: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: theme.spacing.md,
-  },
-  title: {
-    color: theme.colors.textPrimary,
-    fontSize: theme.typography.fontSizes.xl,
-    fontWeight: "700",
+    justifyContent: "flex-end",
+    paddingVertical: theme.spacing.sm,
   },
   investButton: {
     backgroundColor: theme.colors.primary,
@@ -70,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.md,
-    marginTop: theme.spacing.md,
+    marginTop: theme.spacing.xs,
   },
   label: {
     color: theme.colors.textSecondary,
