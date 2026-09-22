@@ -22,22 +22,20 @@ export default function RootLayout() {
         {/* Grupo principal de abas inferiores */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-        {/* Modal de Perfil/Conta (desliza de baixo para cima) */}
+        {/* Modal de Perfil/Conta (desliza de baixo para cima como bottom sheet) */}
         <Stack.Screen
           name="profile-modal"
           options={{
-            presentation: "modal",
-            headerShown: false,
+            presentation: "transparentModal",
             animation: "slide_from_bottom",
           }}
         />
 
-        {/* Modal de Menu Hambúrguer (desliza de baixo para cima) */}
+        {/* Modal de Menu Hambúrguer (desliza de baixo para cima como bottom sheet) */}
         <Stack.Screen
           name="menu-modal"
           options={{
-            presentation: "modal",
-            headerShown: false,
+            presentation: "transparentModal",
             animation: "slide_from_bottom",
           }}
         />

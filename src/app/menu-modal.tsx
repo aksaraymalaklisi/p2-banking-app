@@ -17,22 +17,23 @@ export default function MenuModal() {
     { icon: "loan", title: "Empréstimos" },
     { icon: "boxes", title: "Caixinhas" },
     { icon: "dollar", title: "Investimentos" },
-    { icon: "sparkle", title: "Criptomoedas" },
+    { icon: "crypto", title: "Criptomoedas" },
     { icon: "shield", title: "Seguros" },
     { icon: "barcode", title: "Assistente de Pagamentos" },
-    { icon: "refresh", title: "Open finance" },
+    { icon: "finance", title: "Open Finance" },
   ];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      {/* Barra Superior */}
-      <View style={styles.topBar}>
-        <TouchableOpacity style={styles.closeBtn} onPress={() => router.back()} activeOpacity={0.7}>
-          <NuIcon name="close" size={20} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Menu</Text>
-        <View style={{ width: 40 }} />
-      </View>
+    <View style={styles.overlay}>
+      <SafeAreaView style={styles.sheetContainer} edges={["bottom"]}>
+        {/* Barra Superior */}
+        <View style={styles.topBar}>
+          <TouchableOpacity style={styles.closeBtn} onPress={() => router.back()} activeOpacity={0.7}>
+            <NuIcon name="close" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Menu</Text>
+          <View style={{ width: 40 }} />
+        </View>
 
       {/* Campo de Busca */}
       <View style={styles.searchContainer}>
@@ -75,14 +76,24 @@ export default function MenuModal() {
           <Text style={styles.securityPillText}>Segurança</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  overlay: {
     flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.55)",
+    justifyContent: "flex-end",
+  },
+  sheetContainer: {
+    flex: 1,
+    marginTop: 56,
     backgroundColor: theme.colors.surface,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    overflow: "hidden",
   },
   topBar: {
     flexDirection: "row",

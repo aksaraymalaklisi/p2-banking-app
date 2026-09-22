@@ -19,21 +19,22 @@ export default function ProfileModal() {
   ];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.topBar}>
-        <TouchableOpacity style={styles.iconBtn} onPress={() => router.back()} activeOpacity={0.7}>
-          <NuIcon name="close" size={20} color="#FFFFFF" />
-        </TouchableOpacity>
+    <View style={styles.overlay}>
+      <SafeAreaView style={styles.sheetContainer} edges={["bottom"]}>
+        <View style={styles.topBar}>
+          <TouchableOpacity style={styles.iconBtn} onPress={() => router.back()} activeOpacity={0.7}>
+            <NuIcon name="close" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
 
-        <View style={styles.topBarRight}>
-          <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
-            <NuIcon name="settings" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
-            <NuIcon name="bell" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
+          <View style={styles.topBarRight}>
+            <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
+              <NuIcon name="settings" size={20} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
+              <NuIcon name="bell" size={20} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
       <ScrollView contentContainerStyle={styles.container}>
         {/* Bloco do Usuário */}
@@ -67,14 +68,24 @@ export default function ProfileModal() {
           <Text style={styles.ratingText}>Avalie esta tela</Text>
         </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  overlay: {
     flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.55)",
+    justifyContent: "flex-end",
+  },
+  sheetContainer: {
+    flex: 1,
+    marginTop: 56,
     backgroundColor: theme.colors.surface,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    overflow: "hidden",
   },
   topBar: {
     flexDirection: "row",
