@@ -44,7 +44,6 @@ example
 
 # project-specific
 /projectdocs
-/docsassets
 
 # agents
 .claude/
