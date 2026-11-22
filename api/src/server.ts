@@ -2,7 +2,8 @@ import bcrypt from "bcryptjs";
 import cors from "cors";
 import express from "express";
 import jwt from "jsonwebtoken";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Prisma, PrismaClient } from "./generated/prisma/client.js";
 import { z } from "zod";
 
 declare global {
@@ -14,7 +15,13 @@ declare global {
 }
 
 const app = express();
-const prisma = new PrismaClient();
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL precisa estar configurado.");
+}
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: databaseUrl }),
+});
 const port = Number(process.env.PORT ?? 3001);
 const jwtSecret = (() => {
   const secret = process.env.JWT_SECRET;

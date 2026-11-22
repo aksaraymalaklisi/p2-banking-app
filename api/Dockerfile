@@ -6,7 +6,8 @@ COPY package*.json ./
 RUN npm ci
 
 COPY prisma ./prisma
-RUN npx prisma generate
+COPY prisma.config.ts ./
+RUN DATABASE_URL="postgresql://banking_app:local-build-only@localhost:5432/banking_app" npx prisma generate
 
 COPY tsconfig.json ./
 COPY src ./src
