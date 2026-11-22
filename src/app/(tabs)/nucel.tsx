@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { Alert, StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../../constants/theme";
 
@@ -44,7 +44,17 @@ export default function NuCelScreen() {
         <View style={styles.heroCard}>
           <Text style={styles.heroPreText}>A partir de</Text>
           <Text style={styles.heroPrice}>R$ 45 /mês</Text>
-          <TouchableOpacity style={styles.heroButton} activeOpacity={0.85}>
+          <TouchableOpacity
+            accessibilityRole="button"
+            style={styles.heroButton}
+            activeOpacity={0.85}
+            onPress={() =>
+              Alert.alert(
+                "Planos NuCel",
+                "O plano de demonstração de R$ 45/mês oferece internet e benefícios exclusivos."
+              )
+            }
+          >
             <Text style={styles.heroButtonText}>Conhecer planos</Text>
           </TouchableOpacity>
         </View>
