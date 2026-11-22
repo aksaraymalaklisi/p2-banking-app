@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../../constants/theme";
 
@@ -9,6 +10,16 @@ import { theme } from "../../constants/theme";
 export default function ShoppingScreen() {
   // Ano em que o cliente se tornou cliente Nubank (dinâmico)
   const memberSinceYear = 2023;
+  const [query, setQuery] = useState("");
+  const offers = [
+    { merchant: "Super Duolingo", description: "3 meses grátis para clientes Nubank" },
+    { merchant: "Streaming nu", description: "Descontos especiais para assinantes" },
+  ];
+  const filteredOffers = offers.filter((offer) =>
+    `${offer.merchant} ${offer.description}`.toLocaleLowerCase("pt-BR").includes(
+      query.trim().toLocaleLowerCase("pt-BR")
+    )
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -18,22 +29,47 @@ export default function ShoppingScreen() {
           <Text style={styles.subtitle}>{`Roxinho desde ${memberSinceYear}`}</Text>
         </View>
 
-        <View style={styles.searchBar}>
-          <Text style={styles.searchText}>🔍  Buscar ofertas</Text>
-        </View>
+        <TextInput
+          accessibilityLabel="Buscar ofertas"
+          placeholder="🔍  Buscar ofertas"
+          placeholderTextColor={theme.colors.textSecondary}
+          value={query}
+          onChangeText={setQuery}
+          style={styles.searchBar}
+        />
 
-        <View style={styles.promoCard}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          style={styles.promoCard}
+          activeOpacity={0.8}
+          onPress={() =>
+            Alert.alert("Oferta em destaque", "As ofertas são demonstrativas nesta versão.")
+          }
+        >
           <Text style={styles.badge}>DESTAQUE</Text>
           <Text style={styles.promoTitle}>Economize com o Nubank</Text>
           <Text style={styles.promoSubtitle}>Até 40% OFF e cashback exclusivo</Text>
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Top ofertas</Text>
-          <View style={styles.offerCard}>
-            <Text style={styles.offerMerchant}>Super Duolingo</Text>
-            <Text style={styles.offerDesc}>3 meses grátis para clientes Nubank</Text>
-          </View>
+          {filteredOffers.map((offer) => (
+            <TouchableOpacity
+              key={offer.merchant}
+              accessibilityRole="button"
+              style={styles.offerCard}
+              activeOpacity={0.8}
+              onPress={() =>
+                Alert.alert(offer.merchant, "Esta oferta está disponível apenas para demonstração.")
+              }
+            >
+              <Text style={styles.offerMerchant}>{offer.merchant}</Text>
+              <Text style={styles.offerDesc}>{offer.description}</Text>
+            </TouchableOpacity>
+          ))}
+          {filteredOffers.length === 0 ? (
+            <Text style={styles.offerDesc}>Nenhuma oferta encontrada.</Text>
+          ) : null}
         </View>
       </View>
     </SafeAreaView>
@@ -68,8 +104,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
     marginTop: theme.spacing.md,
-  },
-  searchText: {
     color: theme.colors.textSecondary,
     fontSize: theme.typography.fontSizes.sm,
   },
