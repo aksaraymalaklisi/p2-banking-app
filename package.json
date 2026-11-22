@@ -33,6 +33,12 @@
     "eslint-config-expo": "~57.0.2",
     "typescript": "~6.0.3"
   },
+  "overrides": {
+    "decode-uri-component": "0.5.1",
+    "@expo/fingerprint": {
+      "minimatch": "11.0.9"
+    }
+  },
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
