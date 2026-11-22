@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { Alert, StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { theme } from "../constants/theme";
 import { NuIcon } from "../components/common/NuIcon";
+import { useAuth } from "../context/AuthContext";
 
 /**
  * Modal de Perfil e Conta - Tela 5 do aplicativo.
@@ -10,12 +11,36 @@ import { NuIcon } from "../components/common/NuIcon";
  */
 export default function ProfileModal() {
   const router = useRouter();
+  const { user, logout } = useAuth();
 
   const menuOptions = [
-    { icon: "💼", title: "Abrir conta Nu Empresas", subtitle: "Crie uma conta PJ gratuita para o seu negócio" },
-    { icon: "🏛️", title: "Open Finance", subtitle: "Compartilhe seus dados financeiros com segurança" },
-    { icon: "🔄", title: "Trocar conta", subtitle: "Contas de outros países" },
-    { icon: "🚪", title: "Sair do aplicativo", subtitle: "Encerrar a sessão com segurança" },
+    {
+      icon: "💼",
+      title: "Abrir conta Nu Empresas",
+      subtitle: "Crie uma conta PJ gratuita para o seu negócio",
+      onPress: () => Alert.alert("Nu Empresas", "Este fluxo está disponível apenas como demonstração."),
+    },
+    {
+      icon: "🏛️",
+      title: "Open Finance",
+      subtitle: "Compartilhe seus dados financeiros com segurança",
+      onPress: () => Alert.alert("Open Finance", "Este fluxo está disponível apenas como demonstração."),
+    },
+    {
+      icon: "🔄",
+      title: "Trocar conta",
+      subtitle: "Contas de outros países",
+      onPress: () => Alert.alert("Trocar conta", "Não há outra conta vinculada a este perfil."),
+    },
+    {
+      icon: "🚪",
+      title: "Sair do aplicativo",
+      subtitle: "Encerrar a sessão com segurança",
+      onPress: () => {
+        logout();
+        router.replace("/(auth)/login");
+      },
+    },
   ];
 
   return (
@@ -27,10 +52,18 @@ export default function ProfileModal() {
           </TouchableOpacity>
 
           <View style={styles.topBarRight}>
-            <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.iconBtn}
+              activeOpacity={0.7}
+              onPress={() => router.push("/account")}
+            >
               <NuIcon name="settings" size={20} color="#FFFFFF" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.iconBtn}
+              activeOpacity={0.7}
+              onPress={() => Alert.alert("Notificações", "Você não tem notificações novas.")}
+            >
               <NuIcon name="bell" size={20} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
@@ -43,7 +76,7 @@ export default function ProfileModal() {
             <NuIcon name="user" size={32} color="#FFFFFF" />
           </View>
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>Vitor</Text>
+            <Text style={styles.userName}>{user?.name ?? "Cliente"}</Text>
             <Text style={styles.accountData}>Agência 0001 • Conta 9876543-2</Text>
           </View>
         </View>
@@ -51,7 +84,12 @@ export default function ProfileModal() {
         {/* Opções de Configuração da Conta */}
         <Text style={styles.sectionHeader}>Outras contas e ações</Text>
         {menuOptions.map((item) => (
-          <TouchableOpacity key={item.title} style={styles.optionRow} activeOpacity={0.7}>
+          <TouchableOpacity
+            key={item.title}
+            style={styles.optionRow}
+            activeOpacity={0.7}
+            onPress={item.onPress}
+          >
             <View style={styles.optionIconContainer}>
               <Text style={styles.emoji}>{item.icon}</Text>
             </View>
@@ -63,7 +101,11 @@ export default function ProfileModal() {
           </TouchableOpacity>
         ))}
 
-        <TouchableOpacity style={styles.ratingButton} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.ratingButton}
+          activeOpacity={0.7}
+          onPress={() => Alert.alert("Avaliação", "Obrigado por testar esta tela!")}
+        >
           <NuIcon name="heart" size={16} color={theme.colors.primaryLight} />
           <Text style={styles.ratingText}>Avalie esta tela</Text>
         </TouchableOpacity>
