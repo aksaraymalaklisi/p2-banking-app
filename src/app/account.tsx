@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { FeatureScreen } from "../components/common/FeatureScreen";
 import { PrimaryButton } from "../components/common/PrimaryButton";
@@ -11,9 +11,16 @@ export default function AccountScreen() {
   const { user, logout } = useAuth();
   const { agency, accountNumber, formatCurrency, balance } = useAccount();
 
-  function signOut() {
-    logout();
-    router.replace("/(auth)/login");
+  async function signOut() {
+    try {
+      await logout();
+      router.replace("/(auth)/login");
+    } catch (error) {
+      Alert.alert(
+        "Não foi possível sair",
+        error instanceof Error ? error.message : "Tente novamente."
+      );
+    }
   }
 
   return (
@@ -27,7 +34,7 @@ export default function AccountScreen() {
         <Text style={styles.label}>Saldo disponível</Text>
         <Text style={styles.balance}>{formatCurrency(balance)}</Text>
       </View>
-      <PrimaryButton label="Sair da conta" onPress={signOut} />
+      <PrimaryButton label="Sair da conta" onPress={() => void signOut()} />
     </FeatureScreen>
   );
 }

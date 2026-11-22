@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 export interface AuthUser {
   id: string;
   name: string;
@@ -6,7 +8,7 @@ export interface AuthUser {
 }
 
 export interface AuthResponse {
-  token: string;
+  token?: string;
   user: AuthUser;
 }
 
@@ -18,37 +20,53 @@ export interface Transaction {
   createdAt: string;
 }
 
-interface ApiError {
+interface ApiErrorPayload {
   error?: string;
+}
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
 }
 
 const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3001";
 
 export async function apiRequest<T>(
   path: string,
-  options: RequestInit & { token?: string } = {}
+  options: RequestInit & { token?: string; useCookieSession?: boolean } = {}
 ): Promise<T> {
-  const headers = new Headers(options.headers);
+  const { token, useCookieSession, ...requestOptions } = options;
+  const headers = new Headers(requestOptions.headers);
   headers.set("Content-Type", "application/json");
-  if (options.token) {
-    headers.set("Authorization", `Bearer ${options.token}`);
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+  if (useCookieSession) {
+    headers.set("X-Session-Transport", "cookie");
   }
 
   const response = await fetch(`${apiBaseUrl}${path}`, {
-    ...options,
+    ...requestOptions,
     headers,
+    ...(Platform.OS === "web" ? { credentials: "include" as const } : {}),
   });
   const payload: unknown = await response.json();
 
   if (!response.ok) {
+    const errorMessage =
+      typeof payload === "object" && payload !== null && "error" in payload
+        ? (payload as ApiErrorPayload).error
+        : undefined;
     const message =
-      typeof payload === "object" &&
-      payload !== null &&
-      "error" in payload &&
-      typeof (payload as ApiError).error === "string"
-        ? (payload as ApiError).error
+      typeof errorMessage === "string"
+        ? errorMessage
         : "Não foi possível concluir a solicitação.";
-    throw new Error(message);
+    throw new ApiError(message, response.status);
   }
 
   return payload as T;

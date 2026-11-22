@@ -36,9 +36,16 @@ export default function ProfileModal() {
       icon: "🚪",
       title: "Sair do aplicativo",
       subtitle: "Encerrar a sessão com segurança",
-      onPress: () => {
-        logout();
-        router.replace("/(auth)/login");
+      onPress: async () => {
+        try {
+          await logout();
+          router.replace("/(auth)/login");
+        } catch (error) {
+          Alert.alert(
+            "Não foi possível sair",
+            error instanceof Error ? error.message : "Tente novamente."
+          );
+        }
       },
     },
   ];

@@ -16,7 +16,7 @@ import { PrimaryButton } from "./PrimaryButton";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const router = useRouter();
-  const { login, register } = useAuth();
+  const { login, register, restoreError, clearRestoreError } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +27,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
 
   async function submit() {
     setErrorMessage("");
+    clearRestoreError();
     if (isRegister && password !== confirmation) {
       setErrorMessage("As senhas não conferem.");
       return;
@@ -104,7 +105,9 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           />
         ) : null}
 
-        {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+        {errorMessage || restoreError ? (
+          <Text style={styles.error}>{errorMessage || restoreError}</Text>
+        ) : null}
 
         <PrimaryButton
           label={isRegister ? "Criar conta" : "Entrar"}

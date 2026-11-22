@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet, Text, View } from "react-native";
 import { FeatureScreen } from "../components/common/FeatureScreen";
 import { theme } from "../constants/theme";
 import { useAuth } from "../context/AuthContext";
@@ -20,14 +20,16 @@ export default function ActivityScreen() {
     let active = true;
 
     async function loadTransactions() {
-      if (!token) {
+      if (!token && Platform.OS !== "web") {
         setErrorMessage("Entre novamente para consultar seu extrato.");
         setLoading(false);
         return;
       }
 
       try {
-        const result = await apiRequest<Transaction[]>("/transactions", { token });
+        const result = await apiRequest<Transaction[]>("/transactions", {
+          token: token ?? undefined,
+        });
         if (active) {
           setTransactions(result);
         }

@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { theme } from "../constants/theme";
 import { AccountProvider } from "../context/AccountContext";
 import { AuthProvider, useAuth } from "../context/AuthContext";
@@ -9,7 +10,15 @@ import { AuthProvider, useAuth } from "../context/AuthContext";
  * Envolve a aplicação no AccountProvider para compartilhamento de estado global.
  */
 function RootNavigator() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingScreen}>
+        <ActivityIndicator color={theme.colors.primaryLight} size="large" />
+      </View>
+    );
+  }
 
   return (
     <>
@@ -62,3 +71,12 @@ export default function RootLayout() {
     </AuthProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingScreen: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: theme.colors.background,
+  },
+});

@@ -43,4 +43,9 @@ example
 /android
 
 # project-specific
-/project-internal-docs
+/projectdocs
+
+# agents
+.claude/
+AGENTS.md
+CLAUDE.md

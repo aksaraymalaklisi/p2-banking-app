@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import jwt from "jsonwebtoken";
@@ -23,6 +24,8 @@ const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: databaseUrl }),
 });
 const port = Number(process.env.PORT ?? 3001);
+const webOrigin = process.env.WEB_ORIGIN ?? "http://localhost:8081";
+const sessionCookieName = "banking_session";
 const jwtSecret = (() => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
@@ -31,7 +34,14 @@ const jwtSecret = (() => {
   return secret;
 })();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => callback(null, !origin || origin === webOrigin),
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "X-Session-Transport"],
+  })
+);
+app.use(cookieParser());
 app.use(express.json());
 
 const credentialsSchema = z.object({
@@ -76,19 +86,49 @@ function createAuthResponse(user: {
   };
 }
 
+function sendAuthResponse(
+  request: express.Request,
+  response: express.Response,
+  user: { id: string; name: string; email: string; balanceCents: number },
+  status = 200
+) {
+  const session = createAuthResponse(user);
+  if (request.header("X-Session-Transport") === "cookie") {
+    if (request.header("origin") !== webOrigin) {
+      response.status(403).json({ error: "Origem não permitida para sessão Web." });
+      return;
+    }
+
+    response.cookie(sessionCookieName, session.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 12 * 60 * 60 * 1000,
+    });
+    response.status(status).json({ user: session.user });
+    return;
+  }
+
+  response.status(status).json(session);
+}
+
 function authenticate(
   request: express.Request,
   response: express.Response,
   next: express.NextFunction
 ) {
   const authorization = request.header("authorization");
-  if (!authorization?.startsWith("Bearer ")) {
+  const token = authorization?.startsWith("Bearer ")
+    ? authorization.slice(7)
+    : request.cookies?.[sessionCookieName];
+  if (!token) {
     response.status(401).json({ error: "Faça login para continuar." });
     return;
   }
 
   try {
-    const payload = jwt.verify(authorization.slice(7), jwtSecret);
+    const payload = jwt.verify(token, jwtSecret);
     if (typeof payload === "string" || typeof payload.userId !== "string") {
       response.status(401).json({ error: "Sessão inválida. Entre novamente." });
       return;
@@ -125,7 +165,7 @@ app.post("/auth/register", async (request, response) => {
         passwordHash: await bcrypt.hash(password, 12),
       },
     });
-    response.status(201).json(createAuthResponse(user));
+    sendAuthResponse(request, response, user, 201);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
       response.status(409).json({ error: "Este e-mail já possui uma conta." });
@@ -148,7 +188,17 @@ app.post("/auth/login", async (request, response) => {
     response.status(401).json({ error: "E-mail ou senha incorretos." });
     return;
   }
-  response.json(createAuthResponse(user));
+  sendAuthResponse(request, response, user);
+});
+
+app.post("/auth/logout", (_request, response) => {
+  response.clearCookie(sessionCookieName, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+  response.json({ status: "ok" });
 });
 
 app.get("/account", authenticate, async (request, response) => {

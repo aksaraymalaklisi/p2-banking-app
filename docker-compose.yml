@@ -19,6 +19,7 @@ services:
     environment:
       DATABASE_URL: postgresql://banking_app:${POSTGRES_PASSWORD:-local-demo-password}@database:5432/banking_app
       JWT_SECRET: ${JWT_SECRET:-local-demo-secret-change-before-deploy}
+      WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:8081}
       PORT: 3001
     ports:
       - "3001:3001"
