@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
+import { Alert, StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "../../constants/theme";
 import { NuHeader } from "../../components/common/NuHeader";
@@ -18,7 +18,14 @@ export default function InvestmentsScreen() {
 
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.actionHeader}>
-          <TouchableOpacity style={styles.investButton} activeOpacity={0.8}>
+          <TouchableOpacity
+            accessibilityRole="button"
+            style={styles.investButton}
+            activeOpacity={0.8}
+            onPress={() =>
+              Alert.alert("Investir", "A aplicação apresenta opções de investimento para demonstração.")
+            }
+          >
             <Text style={styles.investButtonText}>Investir</Text>
           </TouchableOpacity>
         </View>
@@ -31,10 +38,17 @@ export default function InvestmentsScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Minha organização</Text>
-          <View style={styles.card}>
+          <TouchableOpacity
+            accessibilityRole="button"
+            style={styles.card}
+            activeOpacity={0.8}
+            onPress={() =>
+              Alert.alert("Caixinhas", "Você tem R$ 2.500,00 guardados nas Caixinhas.")
+            }
+          >
             <Text style={styles.cardTitle}>Caixinhas</Text>
             <Text style={styles.cardSubtitle}>{`${formatCurrency(2500)} guardados`}</Text>
-          </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
