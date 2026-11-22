@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import { theme } from "../../constants/theme";
 import { NuHeader } from "../../components/common/NuHeader";
 import { RoundActionButton } from "../../components/common/RoundActionButton";
@@ -11,14 +12,28 @@ import { useAccount } from "../../context/AccountContext";
  * Conecta o cabeçalho roxo, a visibilidade de saldo e os cartões de produtos.
  */
 export default function HomeScreen() {
+  const router = useRouter();
   const { balance, creditUsed, creditLimit, formatCurrency } = useAccount();
 
   const quickActions = [
-    { icon: "pix" as const, label: "Área Pix e Transferir" },
-    { icon: "barcode" as const, label: "Pagar" },
-    { icon: "phone" as const, label: "Recarga de celular" },
-    { icon: "loan" as const, label: "Pegar emprestado", badge: "R$ 3.000" },
-    { icon: "boxes" as const, label: "Caixinhas Investir" },
+    { icon: "pix" as const, label: "Área Pix e Transferir", href: "/pix" as const },
+    { icon: "barcode" as const, label: "Pagar", href: "/payments" as const },
+    {
+      icon: "phone" as const,
+      label: "Recarga de celular",
+      href: "/payments" as const,
+    },
+    {
+      icon: "loan" as const,
+      label: "Pegar emprestado",
+      href: "/loans" as const,
+      badge: "R$ 3.000",
+    },
+    {
+      icon: "boxes" as const,
+      label: "Caixinhas Investir",
+      href: "/(tabs)/investments" as const,
+    },
   ];
 
   return (
@@ -28,7 +43,12 @@ export default function HomeScreen() {
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Bloco de Saldo em Conta */}
-        <TouchableOpacity style={styles.accountSection} activeOpacity={0.7}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          style={styles.accountSection}
+          activeOpacity={0.7}
+          onPress={() => router.push("/account")}
+        >
           <View style={styles.accountHeader}>
             <Text style={styles.accountTitle}>Conta</Text>
             <NuIcon name="chevron-right" size={18} color={theme.colors.textSecondary} />
@@ -48,18 +68,29 @@ export default function HomeScreen() {
               icon={action.icon}
               label={action.label}
               badgeText={action.badge}
+              onPress={() => router.push(action.href)}
             />
           ))}
         </ScrollView>
 
         {/* Atalho Meus Cartões */}
-        <TouchableOpacity style={styles.myCardsBtn} activeOpacity={0.7}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          style={styles.myCardsBtn}
+          activeOpacity={0.7}
+          onPress={() => router.push("/cards")}
+        >
           <NuIcon name="card" size={20} color="#FFFFFF" />
           <Text style={styles.myCardsText}>Meus cartões</Text>
         </TouchableOpacity>
 
         {/* Card de Cartão de Crédito */}
-        <TouchableOpacity style={styles.productCard} activeOpacity={0.7}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          style={styles.productCard}
+          activeOpacity={0.7}
+          onPress={() => router.push("/cards")}
+        >
           <View style={styles.cardHeader}>
             <Text style={styles.productTitle}>Cartão de crédito</Text>
             <NuIcon name="chevron-right" size={18} color={theme.colors.textSecondary} />
@@ -72,7 +103,12 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         {/* Card de Empréstimo */}
-        <TouchableOpacity style={styles.productCard} activeOpacity={0.7}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          style={styles.productCard}
+          activeOpacity={0.7}
+          onPress={() => router.push("/loans")}
+        >
           <View style={styles.cardHeader}>
             <Text style={styles.productTitle}>Empréstimo</Text>
             <NuIcon name="chevron-right" size={18} color={theme.colors.textSecondary} />
@@ -82,9 +118,13 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         {/* Rodapé: Avalie esta tela */}
-        <TouchableOpacity style={styles.ratingButton} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.ratingButton}
+          activeOpacity={0.7}
+          onPress={() => router.push("/activity")}
+        >
           <NuIcon name="heart" size={16} color={theme.colors.primaryLight} />
-          <Text style={styles.ratingText}>Avalie esta tela</Text>
+          <Text style={styles.ratingText}>Ver extrato</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
