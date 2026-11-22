@@ -1,7 +1,8 @@
 import { StyleSheet, View } from "react-native";
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import { theme } from "../../constants/theme";
 import { NuIcon, IconName } from "../../components/common/NuIcon";
+import { useAuth } from "../../context/AuthContext";
 
 /**
  * Componente que renderiza o ícone da aba.
@@ -31,13 +32,18 @@ function TabBarIcon({
  * saia da aplicação em vez de retroceder entre abas.
  */
 export default function TabsLayout() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Redirect href="/(auth)/login" />;
+  }
+
   return (
     <Tabs
       backBehavior="none"
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        safeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 },
         tabBarStyle: styles.tabBar,
         tabBarItemStyle: styles.tabBarItem,
         tabBarIconStyle: styles.tabBarIconContainer,

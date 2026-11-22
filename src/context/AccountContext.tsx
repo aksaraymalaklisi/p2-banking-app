@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
+import { useAuth } from "./AuthContext";
 
 /**
  * Interface que define os dados da conta do usuário.
@@ -23,14 +24,16 @@ const AccountContext = createContext<AccountData | undefined>(undefined);
  * Armazena e gerencia o estado global de visibilidade do saldo e valores simulados.
  */
 export function AccountProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+
   // useState: armazena a visibilidade do saldo e dispara re-render quando alterado
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
 
   // Dados simulados do cliente Nubank
-  const userName = "Vitor";
+  const userName = user?.name ?? "Vitor";
   const agency = "0001";
   const accountNumber = "9876543-2";
-  const balance = 1450.8;
+  const balance = user ? user.balanceCents / 100 : 1450.8;
   const creditLimit = 5000.0;
   const creditUsed = 780.45;
   const investmentsTotal = 3250.0;

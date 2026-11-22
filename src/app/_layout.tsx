@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { theme } from "../constants/theme";
 import { AccountProvider } from "../context/AccountContext";
+import { AuthProvider } from "../context/AuthContext";
 
 /**
  * Layout Raiz (Root Layout) da aplicação Nubank.
@@ -9,37 +10,35 @@ import { AccountProvider } from "../context/AccountContext";
  */
 export default function RootLayout() {
   return (
-    <AccountProvider>
-      {/* Ícones de relógio e bateria brancos para combinar com o Dark Mode */}
-      <StatusBar style="light" />
+    <AuthProvider>
+      <AccountProvider>
+        <StatusBar style="light" />
 
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: theme.colors.background },
-        }}
-      >
-        {/* Grupo principal de abas inferiores */}
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
-        {/* Modal de Perfil/Conta (desliza de baixo para cima como bottom sheet) */}
-        <Stack.Screen
-          name="profile-modal"
-          options={{
-            presentation: "transparentModal",
-            animation: "slide_from_bottom",
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: theme.colors.background },
           }}
-        />
-
-        {/* Modal de Menu Hambúrguer (desliza de baixo para cima como bottom sheet) */}
-        <Stack.Screen
-          name="menu-modal"
-          options={{
-            presentation: "transparentModal",
-            animation: "slide_from_bottom",
-          }}
-        />
-      </Stack>
-    </AccountProvider>
+        >
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="profile-modal"
+            options={{
+              presentation: "transparentModal",
+              animation: "slide_from_bottom",
+            }}
+          />
+          <Stack.Screen
+            name="menu-modal"
+            options={{
+              presentation: "transparentModal",
+              animation: "slide_from_bottom",
+            }}
+          />
+        </Stack>
+      </AccountProvider>
+    </AuthProvider>
   );
 }
