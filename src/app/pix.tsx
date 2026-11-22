@@ -13,7 +13,7 @@ export default function PixScreen() {
   const [loading, setLoading] = useState(false);
 
   async function sendPix() {
-    const numericAmount = Number(amount.replace(",", "."));
+    const numericAmount = Number(amount.trim().replace(/\./g, "").replace(",", "."));
     if (!key.trim() || !Number.isFinite(numericAmount) || numericAmount <= 0) {
       Alert.alert("Confira os dados", "Informe uma chave Pix e um valor válido.");
       return;

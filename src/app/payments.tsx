@@ -13,7 +13,7 @@ export default function PaymentsScreen() {
   const [loading, setLoading] = useState(false);
 
   async function payBill() {
-    const numericAmount = Number(amount.replace(",", "."));
+    const numericAmount = Number(amount.trim().replace(/\./g, "").replace(",", "."));
     if (!barcode.trim() || !Number.isFinite(numericAmount) || numericAmount <= 0) {
       Alert.alert("Confira os dados", "Informe o código de barras e um valor válido.");
       return;

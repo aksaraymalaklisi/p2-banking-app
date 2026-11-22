@@ -9,7 +9,7 @@ export default function LoansScreen() {
   const [amount, setAmount] = useState("");
 
   function requestSimulation() {
-    const numericAmount = Number(amount.replace(",", "."));
+    const numericAmount = Number(amount.trim().replace(/\./g, "").replace(",", "."));
     if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
       Alert.alert("Valor inválido", "Informe quanto deseja simular.");
       return;
