@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, type Href } from "expo-router";
 import { theme } from "../constants/theme";
-import { NuIcon } from "../components/common/NuIcon";
+import { NuIcon, type IconName } from "../components/common/NuIcon";
 
 /**
  * Modal de Menu Hambúrguer - Tela 6 do aplicativo.
@@ -10,18 +11,21 @@ import { NuIcon } from "../components/common/NuIcon";
  */
 export default function MenuModal() {
   const router = useRouter();
+  const [query, setQuery] = useState("");
 
   const menuSections = [
-    { icon: "card", title: "Conta" },
-    { icon: "card", title: "Cartão de crédito" },
-    { icon: "loan", title: "Empréstimos" },
-    { icon: "boxes", title: "Caixinhas" },
-    { icon: "dollar", title: "Investimentos" },
-    { icon: "crypto", title: "Criptomoedas" },
-    { icon: "shield", title: "Seguros" },
-    { icon: "barcode", title: "Assistente de Pagamentos" },
-    { icon: "finance", title: "Open Finance" },
-  ];
+    { icon: "card", title: "Conta", href: "/account" },
+    { icon: "card", title: "Cartão de crédito", href: "/cards" },
+    { icon: "loan", title: "Empréstimos", href: "/loans" },
+    { icon: "boxes", title: "Caixinhas", href: "/(tabs)/investments" },
+    { icon: "dollar", title: "Investimentos", href: "/(tabs)/investments" },
+    { icon: "barcode", title: "Assistente de Pagamentos", href: "/payments" },
+    { icon: "arrows", title: "Extrato", href: "/activity" },
+    { icon: "pix", title: "Área Pix", href: "/pix" },
+  ] satisfies { icon: IconName; title: string; href: Href }[];
+  const filteredSections = menuSections.filter((item) =>
+    item.title.toLocaleLowerCase("pt-BR").includes(query.trim().toLocaleLowerCase("pt-BR"))
+  );
 
   return (
     <View style={styles.overlay}>
@@ -43,35 +47,68 @@ export default function MenuModal() {
             placeholder="Buscar"
             placeholderTextColor={theme.colors.textSecondary}
             style={styles.searchInput}
+            value={query}
+            onChangeText={setQuery}
           />
         </View>
       </View>
 
       {/* Lista de Itens do Menu */}
       <ScrollView contentContainerStyle={styles.listContainer}>
-        {menuSections.map((item) => (
-          <TouchableOpacity key={item.title} style={styles.menuRow} activeOpacity={0.7}>
+        {filteredSections.map((item) => (
+          <TouchableOpacity
+            key={item.title}
+            style={styles.menuRow}
+            activeOpacity={0.7}
+            onPress={() => router.push(item.href)}
+          >
             <View style={styles.menuRowLeft}>
-              <NuIcon name={item.icon as any} size={20} color={theme.colors.textSecondary} />
+              <NuIcon name={item.icon} size={20} color={theme.colors.textSecondary} />
               <Text style={styles.menuRowTitle}>{item.title}</Text>
             </View>
             <NuIcon name="chevron-right" size={18} color={theme.colors.textMuted} />
           </TouchableOpacity>
         ))}
+        {filteredSections.length === 0 ? (
+          <Text style={styles.emptySearch}>Nenhum serviço encontrado.</Text>
+        ) : null}
       </ScrollView>
 
       {/* Rodapé com Atalhos Rápidos */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerIconBtn} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.footerIconBtn}
+          activeOpacity={0.7}
+          onPress={() => router.push("/account")}
+        >
           <NuIcon name="settings" size={20} color="#FFFFFF" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerIconBtn} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.footerIconBtn}
+          activeOpacity={0.7}
+          onPress={() => router.push("/account")}
+        >
           <NuIcon name="user" size={20} color="#FFFFFF" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerIconBtn} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.footerIconBtn}
+          activeOpacity={0.7}
+          onPress={() =>
+            Alert.alert(
+              "Ajuda",
+              "Consulte o extrato ou a área Pix para ver como a demonstração funciona."
+            )
+          }
+        >
           <NuIcon name="help" size={20} color="#FFFFFF" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.securityPill} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.securityPill}
+          activeOpacity={0.8}
+          onPress={() =>
+            Alert.alert("Segurança", "Esta aplicação é uma demonstração acadêmica.")
+          }
+        >
           <NuIcon name="shield" size={16} color="#FFFFFF" />
           <Text style={styles.securityPillText}>Segurança</Text>
         </TouchableOpacity>
@@ -136,6 +173,11 @@ const styles = StyleSheet.create({
   listContainer: {
     paddingHorizontal: theme.spacing.md,
     paddingBottom: theme.spacing.xl,
+  },
+  emptySearch: {
+    color: theme.colors.textSecondary,
+    fontSize: theme.typography.fontSizes.sm,
+    paddingVertical: theme.spacing.md,
   },
   menuRow: {
     flexDirection: "row",
