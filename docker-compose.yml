@@ -37,7 +37,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      EXPO_PUBLIC_API_URL: http://localhost:3001
+      EXPO_PUBLIC_API_URL: ${EXPO_PUBLIC_API_URL:-http://localhost:3001}
     ports:
       - "8081:8081"
     depends_on:
