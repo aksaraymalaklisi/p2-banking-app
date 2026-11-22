@@ -55,7 +55,7 @@ export default function ProfileModal() {
             <TouchableOpacity
               style={styles.iconBtn}
               activeOpacity={0.7}
-              onPress={() => router.push("/account")}
+              onPress={() => router.dismissTo("/account")}
             >
               <NuIcon name="settings" size={20} color="#FFFFFF" />
             </TouchableOpacity>

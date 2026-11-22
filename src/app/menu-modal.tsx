@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, type Href } from "expo-router";
 import { theme } from "../constants/theme";
@@ -60,7 +68,7 @@ export default function MenuModal() {
             key={item.title}
             style={styles.menuRow}
             activeOpacity={0.7}
-            onPress={() => router.push(item.href)}
+            onPress={() => router.dismissTo(item.href)}
           >
             <View style={styles.menuRowLeft}>
               <NuIcon name={item.icon} size={20} color={theme.colors.textSecondary} />
@@ -79,14 +87,14 @@ export default function MenuModal() {
         <TouchableOpacity
           style={styles.footerIconBtn}
           activeOpacity={0.7}
-          onPress={() => router.push("/account")}
+          onPress={() => router.dismissTo("/account")}
         >
           <NuIcon name="settings" size={20} color="#FFFFFF" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.footerIconBtn}
           activeOpacity={0.7}
-          onPress={() => router.push("/account")}
+          onPress={() => router.dismissTo("/account")}
         >
           <NuIcon name="user" size={20} color="#FFFFFF" />
         </TouchableOpacity>
