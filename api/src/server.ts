@@ -24,7 +24,35 @@ const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: databaseUrl }),
 });
 const port = Number(process.env.PORT ?? 3001);
-const webOrigin = process.env.WEB_ORIGIN ?? "http://localhost:8081";
+const configuredOrigins = (process.env.WEB_ORIGIN ?? "http://localhost:8081")
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/$/, ""))
+  .filter(Boolean);
+
+function isAllowedOrigin(origin: string | undefined): boolean {
+  if (!origin) {
+    return true;
+  }
+  const normalized = origin.replace(/\/$/, "");
+  if (configuredOrigins.includes(normalized)) {
+    return true;
+  }
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      const url = new URL(normalized);
+      if (
+        (url.hostname === "localhost" || url.hostname === "127.0.0.1") &&
+        (url.port === "8081" || url.port === "19006" || url.port === "3000")
+      ) {
+        return true;
+      }
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
+
 const sessionCookieName = "banking_session";
 const jwtSecret = (() => {
   const secret = process.env.JWT_SECRET;
@@ -36,7 +64,7 @@ const jwtSecret = (() => {
 
 app.use(
   cors({
-    origin: (origin, callback) => callback(null, !origin || origin === webOrigin),
+    origin: (origin, callback) => callback(null, isAllowedOrigin(origin)),
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization", "X-Session-Transport"],
   })
@@ -94,7 +122,7 @@ function sendAuthResponse(
 ) {
   const session = createAuthResponse(user);
   if (request.header("X-Session-Transport") === "cookie") {
-    if (request.header("origin") !== webOrigin) {
+    if (!isAllowedOrigin(request.header("origin"))) {
       response.status(403).json({ error: "Origem não permitida para sessão Web." });
       return;
     }

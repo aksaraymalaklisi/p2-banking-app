@@ -141,14 +141,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const logout = useCallback(async () => {
-    if (Platform.OS === "web") {
-      await apiRequest<{ status: string }>("/auth/logout", { method: "POST" });
-    } else {
-      await SecureStore.deleteItemAsync(SESSION_TOKEN_KEY);
+    try {
+      if (Platform.OS === "web") {
+        await apiRequest<{ status: string }>("/auth/logout", { method: "POST" });
+      } else {
+        await SecureStore.deleteItemAsync(SESSION_TOKEN_KEY);
+      }
+    } catch (error) {
+      console.warn("Não foi possível invalidar a sessão no servidor:", error);
+    } finally {
+      if (Platform.OS !== "web") {
+        try {
+          await SecureStore.deleteItemAsync(SESSION_TOKEN_KEY);
+        } catch {
+          // ignora erro ao remover se o item já não existir
+        }
+      }
+      setUser(null);
+      setToken(null);
+      setRestoreError(null);
     }
-    setUser(null);
-    setToken(null);
-    setRestoreError(null);
   }, []);
 
   const createTransaction = useCallback(
