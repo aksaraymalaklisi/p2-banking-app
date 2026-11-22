@@ -2,27 +2,37 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { theme } from "../constants/theme";
 import { AccountProvider } from "../context/AccountContext";
-import { AuthProvider } from "../context/AuthContext";
+import { AuthProvider, useAuth } from "../context/AuthContext";
 
 /**
  * Layout Raiz (Root Layout) da aplicação Nubank.
  * Envolve a aplicação no AccountProvider para compartilhamento de estado global.
  */
-export default function RootLayout() {
-  return (
-    <AuthProvider>
-      <AccountProvider>
-        <StatusBar style="light" />
+function RootNavigator() {
+  const { user } = useAuth();
 
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: theme.colors.background },
-          }}
-        >
-          <Stack.Screen name="index" />
+  return (
+    <>
+      <StatusBar style="light" />
+
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: theme.colors.background },
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Protected guard={!user}>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        </Stack.Protected>
+        <Stack.Protected guard={Boolean(user)}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="account" />
+          <Stack.Screen name="activity" />
+          <Stack.Screen name="cards" />
+          <Stack.Screen name="loans" />
+          <Stack.Screen name="payments" />
+          <Stack.Screen name="pix" />
           <Stack.Screen
             name="profile-modal"
             options={{
@@ -37,7 +47,17 @@ export default function RootLayout() {
               animation: "slide_from_bottom",
             }}
           />
-        </Stack>
+        </Stack.Protected>
+      </Stack>
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <AccountProvider>
+        <RootNavigator />
       </AccountProvider>
     </AuthProvider>
   );
