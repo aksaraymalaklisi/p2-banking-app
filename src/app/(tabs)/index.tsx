@@ -21,7 +21,7 @@ export default function HomeScreen() {
     {
       icon: "phone" as const,
       label: "Recarga de celular",
-      href: "/payments" as const,
+      href: "/(tabs)/nucel" as const,
     },
     {
       icon: "loan" as const,

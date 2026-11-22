@@ -2,16 +2,13 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Platform, StyleSheet, Text, View } from "react-native";
 import { FeatureScreen } from "../components/common/FeatureScreen";
 import { theme } from "../constants/theme";
+import { useAccount } from "../context/AccountContext";
 import { useAuth } from "../context/AuthContext";
 import { apiRequest, type Transaction } from "../lib/api";
 
-const currency = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-});
-
 export default function ActivityScreen() {
   const { token } = useAuth();
+  const { formatCurrency } = useAccount();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -68,7 +65,7 @@ export default function ActivityScreen() {
             </Text>
           </View>
           <Text style={styles.amount}>
-            − {currency.format(transaction.amountCents / 100)}
+            − {formatCurrency(transaction.amountCents / 100)}
           </Text>
         </View>
       ))}

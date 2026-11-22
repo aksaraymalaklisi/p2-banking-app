@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
     padding: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
   },
   offerMerchant: {
     color: theme.colors.textPrimary,

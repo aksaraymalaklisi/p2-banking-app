@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { theme } from "../../constants/theme";
 import { NuIcon } from "./NuIcon";
@@ -12,6 +12,7 @@ export interface NuHeaderProps {
   showHelp?: boolean;
   showMenu?: boolean;
   showAvatar?: boolean;
+  onPressHelp?: () => void;
   children?: ReactNode;
 }
 
@@ -26,10 +27,22 @@ export function NuHeader({
   showHelp = true,
   showMenu = true,
   showAvatar = true,
+  onPressHelp,
   children,
 }: NuHeaderProps) {
   const router = useRouter();
   const { isBalanceVisible, toggleBalanceVisibility, userName } = useAccount();
+
+  const handleHelp = () => {
+    if (onPressHelp) {
+      onPressHelp();
+    } else {
+      Alert.alert(
+        "Ajuda",
+        "Consulte o extrato ou a área Pix para ver como a demonstração funciona."
+      );
+    }
+  };
 
   const displayTitle = title ?? `Olá, ${userName}`;
 
@@ -65,7 +78,11 @@ export function NuHeader({
           )}
 
           {showHelp && (
-            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.iconButton}
+              activeOpacity={0.7}
+              onPress={handleHelp}
+            >
               <NuIcon name="help" size={20} color="#FFFFFF" />
             </TouchableOpacity>
           )}
